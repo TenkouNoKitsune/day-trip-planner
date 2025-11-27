@@ -10,8 +10,8 @@ The python script can be executed by Pyodide. If you don't need that, you can de
 
 * Python / Pyodide
 * [python-tsp](https://pypi.org/project/python_tsp/) library
-* list of locations to visit (poi/stations); format explained in route.py (Javascript object -> .to_py())
-* list of locations to stay at (homes/centers); format explained in route.py (Javascript object -> .to_py())
+* list of locations to visit (poi/stations); format explained in route.py
+* list of locations to stay at (homes/centers); format explained in route.py
 * an API/heuristic that gets you the duration of a route from point A to point B (in minutes)
 
 ## Algorithm
