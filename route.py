@@ -22,10 +22,10 @@ EARTH_R = 6371000  # m
 LEAF_SIZE = 40
 # keys: idx (int), values: home dicts with keys: 'name', 'lat', 'lon', 'stay' (int, days)
 homes_dict = []
-# keys: 'name', 'lat', 'lon', 'duration' (int, min), 'favorite' (0/1)
+# keys: 'name', 'lat', 'lon', 'duration' (int, minutes -> idle time), 'favorite' (0/1)
 unclass_poi_dict = {}
 selected_home = 0  # index of selected home
-# keys: idx (int) (same as homes_dict -> those poi belong to that home; get via external("cache_poi_assoc") ), values: poi dicts with keys: 'name', 'lat', 'lon', 'duration' (int, min, -> idle time), 'favorite' (0/1)
+# keys: idx (int) (same as homes_dict -> those poi belong to that home; association is json_payload for external("cache_poi_assoc") ), values: poi dicts with keys: 'name', 'lat', 'lon', 'duration' (int, minutes, -> idle time), 'favorite' (0/1)
 poi_dict = [][selected_home]
 
 
@@ -33,10 +33,12 @@ async def external(service, json_payload):
     # IMPLEMENT YOURSELF
     # if service == "route":
     #    json_payload: {"start": {"lon": float, "lat": float}, "end": {"lon": float, "lat": float}}
-    #    returns: int (time in minutes)
+    #    ... send to external function
+    #    return: int (time in minutes)
     # elif service == "cache_poi_assoc":
     #    json_payload: List of dicts with 'lat', 'lon', 'lat_center', 'lon_center'
-    #    returns: int (number of cached entries)
+    #    ... send to external function
+    #    return: int (number of cached entries)
     pass
 
 
@@ -455,18 +457,10 @@ async def merge_associated(G, preliminary_distances, assoc_groups, remaining_gro
 
 
 async def main():
-    homes = pd.DataFrame.from_records(homes_dict.to_py())
-    homes["lat"] = homes["lat"].astype(float)
-    homes["lon"] = homes["lon"].astype(float)
+    homes = pd.DataFrame.from_records(homes_dict)
     center = homes.iloc[selected_home]
-    poi = pd.DataFrame.from_records(unclass_poi_dict.to_py())
-    if not poi.empty:
-        poi["lat"] = poi["lat"].astype(float)
-        poi["lon"] = poi["lon"].astype(float)
-    stations = pd.DataFrame.from_records(poi_dict.to_py())
-    if not stations.empty:
-        stations["lat"] = stations["lat"].astype(float)
-        stations["lon"] = stations["lon"].astype(float)
+    poi = pd.DataFrame.from_records(unclass_poi_dict)
+    stations = pd.DataFrame.from_records(poi_dict)
 
     if not poi.empty:
         # group by nearest home
@@ -614,3 +608,4 @@ async def main():
     return dumps(optimal_routes)
 
 main()
+
