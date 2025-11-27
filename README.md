@@ -14,6 +14,8 @@ The python script can be executed by Pyodide. If you don't need that, you can de
 * list of locations to stay at (homes/centers); format explained in route.py
 * an API/heuristic that gets you the duration of a route from point A to point B (in minutes)
 
+If main.py doesn't work, try using pyodide and pyodide_worker.js or look for differences there. main.py is practically included in pyodide_worker.js as executed string.
+
 ## Algorithm
 
 There are two algorithms: The slow algorithm just uses TSP and is very slow. The fast algorithm is a heuristic and is explained in the following.
