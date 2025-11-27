@@ -8,6 +8,46 @@ const MESSAGE_TYPES = {
     INFO_RESPONSE: "INFO_RESPONSE", // Main script provides info
 };
 
+// every message to and from worker with payload: worker id (int), message type (above), context (below)
+
+/*
+REQUEST-type worker message needs to include following context:
+    MAX_TOTAL_WAYLENGTH: 360,  // min., min = 60; = day length
+    MAX_SINGLE_TIME_DISTANCE: 120,  // min.
+    MAX_CORE_GROUP_COVERAGE: 0.75,
+    MAX_STATIONS_ADAY_TO_OMIT_GROUP_COVERAGE: 4,
+    MAX_ON_THE_WAY_EXTENSION: 1.75,  // relative factor
+    // min. to the core group, should be less than MAX_SINGLE_TIME_DISTANCE
+    BLOCK_ON_THE_WAY_ABOVE: 90,
+    ON_THE_WAY_ANGLE_CRITERION: 45,  // degrees (both sides of the line)
+    OPTIMIZE_REMOVE_STATIONS_UNTIL: 2,  // remaining at one day
+    SLOW_ALGORITHM: false,
+    EARTH_R: 6371000,  // m
+    LEAF_SIZE: 40,
+    homes_dict: [], // keys: idx (int), values: home dicts with keys: 'name', 'lat', 'lon', 'stay' (int, days)
+    unclass_poi_dict: {}, // keys: 'name', 'lat', 'lon', 'duration' (int, minutes -> idle time), 'favorite' (0/1)
+    selected_home: int, // select the home from homes_dict where to calculate the day trips
+    poi_dict: pins.pois[homeIdx] // may be empty / leave empty when in doubt - keys: idx (int) (same as homes_dict -> those poi belong to that home; association is json_payload for external("cache_poi_assoc") ), values: poi dicts with keys: 'name', 'lat', 'lon', 'duration' (int, minutes, -> idle time), 'favorite' (0/1)
+*/
+
+/*
+INFO_REQUEST-type sends following context:
+    if missingInfo = route
+        {"start": {"lon": float, "lat": float}, "end": {"lon": float, "lat": float}}
+        ... for every connection to fetch
+        expected return: time needed in minutes (> 0) [with INFO_RESPONSE-type message]
+    else if missingInfo = cache_poi_assoc
+        List of dicts with 'lat', 'lon', 'lat_center', 'lon_center'
+        -> use this to populate poi_dict next time (unclass_poi_dict should only list the locations where this wasn't done before)
+        expected return: int > 0 if successfull [with INFO_RESPONSE-type message]
+*/
+
+/*
+RESPONSE-type sends following context:
+    {"route": [{"lon": float, "lat": float} ...], "duration": int}
+    route coordinate objects are ordered by position in calculated route
+*/
+
 let pyodideReadyPromise = loadPyodide();
 
 var commandResolve = null;
@@ -630,3 +670,4 @@ async def main():
 
 main()
 `;
+
