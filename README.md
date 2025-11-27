@@ -4,7 +4,7 @@
 
 If you plan a vacation but you have too many locations you want to visit, this script is for you. It chooses a limited number of locations from a list and groups them into 'day trips'. Day trips have a maximum length that determines how many locations can be visited. 'Favorite' locations are always included. The day trips are optimized using TSP. The script intends to minimize API calls.
 
-The python script can be executed by Pyodide. If you don't need that, you can delete the async definitions and `.to_py()` function calls as well as make nearly all parameters global variables.
+The python script can be executed by Pyodide. If you don't need that, you can delete the async definitions and make nearly all parameters global variables.
 
 **What you need**
 
